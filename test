@@ -1,0 +1,12 @@
+apiVersion: thing.haul.io/v1alpha1
+kind: richText
+metadata:
+  dateCreated: 2018-12-14T20:45:00Z
+  dateModified: 2018-12-14T20:45:00Z
+  owner: 'Matt'
+  bag: bag/name
+  labels:
+  - label-name
+  - other-label
+spec:
+	content: hello this is a test
