@@ -21,6 +21,20 @@ metadata:
 spec:
   content: hello this is a test`
 
+var imgYaml = `apiVersion: thing.haul.io/v1alpha1
+kind: image
+metadata:
+  dateCreated: 2018-12-14T20:45:00Z
+  dateModified: 2018-12-14T20:45:00Z
+  owner: 'Matt'
+  bag: bag/name
+  labels:
+  - label-name
+  - other-label
+spec:
+  path: /storage/images/hello.png
+  altText: This is a photo.`
+
 func TestThingUnmarshal(t *testing.T) {
 	th := thing.Thing{}
 	err := yaml.Unmarshal([]byte(richTextYaml), &th)
@@ -44,4 +58,17 @@ func TestRichTextUnmarshal(t *testing.T) {
 
 	assert.Equal(t, text.APIVersion, "thing.haul.io/v1alpha1")
 	assert.Equal(t, text.Spec.Content, "hello this is a test")
+}
+
+func TestImageUnmarshal(t *testing.T) {
+	img := thing.Image{}
+	th := thing.Thing{}
+	err := yaml.Unmarshal([]byte(imgYaml), &img)
+	assert.NoError(t, err)
+	err = yaml.Unmarshal([]byte(imgYaml), &th)
+	assert.NoError(t, err)
+
+	assert.Equal(t, img.APIVersion, "thing.haul.io/v1alpha1")
+	assert.Equal(t, img.Spec.Path, "/storage/images/hello.png")
+	assert.Equal(t, img.Spec.AltText, "This is a photo.")
 }
