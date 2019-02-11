@@ -15,3 +15,5 @@ define access control rules for your bags.
 
 Your things are also sorted by labels, which act as tags. You can assign your
 things as many or as few labels as you like, and use them however you like.
+
+[More about the haul format](./format.md)
