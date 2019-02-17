@@ -14,6 +14,11 @@ func UnmarshalThing(input []byte) (Thing, error) {
 		return nil, err
 	}
 
+	// Check for correct API version
+	if th.GetAPIVersion() != apiVersionString {
+		return nil, UnknownAPIVersionError{GivenVersion: th.GetAPIVersion()}
+	}
+
 	switch th.Kind {
 	case "richText":
 		var rt RichTextStruct

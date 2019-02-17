@@ -1,6 +1,7 @@
 package v1alpha1_test
 
 import (
+	"fmt"
 	"testing"
 	"time"
 
@@ -73,5 +74,6 @@ func TestCantUnmarshalWrongAPI(t *testing.T) {
 kind: richText
 metadata: {}`)
 	_, err := thing.UnmarshalThing(wrongAPIVersion)
-	assert.Error(t, thing.IncorrectAPIVersionError{}, err)
+	fmt.Println(err)
+	assert.Errorf(t, err, thing.UnknownAPIVersionErrorText, "thing.haul.io/v2")
 }
