@@ -1,11 +1,11 @@
 package v1alpha1_test
 
 import (
-	thing "github.com/mbellgb/haul/pkg/api/thing/v1alpha1"
-	"github.com/stretchr/testify/assert"
-	"gopkg.in/yaml.v2"
 	"testing"
 	"time"
+
+	thing "github.com/mbellgb/haul/pkg/api/thing/v1alpha1"
+	"github.com/stretchr/testify/assert"
 )
 
 var richTextYaml = `apiVersion: thing.haul.io/v1alpha1
@@ -36,39 +36,42 @@ spec:
   altText: This is a photo.`
 
 func TestThingUnmarshal(t *testing.T) {
-	th := thing.Thing{}
-	err := yaml.Unmarshal([]byte(richTextYaml), &th)
+	th, err := thing.UnmarshalThing([]byte(richTextYaml))
 	assert.NoError(t, err)
 
-	assert.Equal(t, th.APIVersion, "thing.haul.io/v1alpha1")
-	assert.Equal(t, th.Kind, "richText")
-	assert.Equal(t, th.Metadata.DateCreated.Month(), time.December)
-	assert.Equal(t, th.Metadata.DateCreated.Hour(), 20)
-	assert.Equal(t, len(th.Metadata.Labels), 2)
-	assert.Equal(t, th.Metadata.Labels[0], "label-name")
+	assert.Equal(t, th.GetAPIVersion(), "thing.haul.io/v1alpha1")
+	assert.Equal(t, th.GetKind(), "richText")
+	assert.Equal(t, th.GetMetadata().DateCreated.Month(), time.December)
+	assert.Equal(t, th.GetMetadata().DateCreated.Hour(), 20)
+	assert.Equal(t, len(th.GetMetadata().Labels), 2)
+	assert.Equal(t, th.GetMetadata().Labels[0], "label-name")
 }
 
 func TestRichTextUnmarshal(t *testing.T) {
-	text := thing.RichText{}
-	th := thing.Thing{}
-	err := yaml.Unmarshal([]byte(richTextYaml), &text)
+	th, err := thing.UnmarshalThing([]byte(richTextYaml))
 	assert.NoError(t, err)
-	err = yaml.Unmarshal([]byte(richTextYaml), &th)
-	assert.NoError(t, err)
+	text, ok := th.(thing.RichText)
+	assert.True(t, ok)
 
-	assert.Equal(t, text.APIVersion, "thing.haul.io/v1alpha1")
-	assert.Equal(t, text.Spec.Content, "hello this is a test")
+	assert.Equal(t, th.GetAPIVersion(), "thing.haul.io/v1alpha1")
+	assert.Equal(t, text.GetSpec().Content, "hello this is a test")
 }
 
 func TestImageUnmarshal(t *testing.T) {
-	img := thing.Image{}
-	th := thing.Thing{}
-	err := yaml.Unmarshal([]byte(imgYaml), &img)
+	th, err := thing.UnmarshalThing([]byte(imgYaml))
 	assert.NoError(t, err)
-	err = yaml.Unmarshal([]byte(imgYaml), &th)
-	assert.NoError(t, err)
+	img, ok := th.(thing.Image)
+	assert.True(t, ok)
 
-	assert.Equal(t, img.APIVersion, "thing.haul.io/v1alpha1")
-	assert.Equal(t, img.Spec.Path, "/storage/images/hello.png")
-	assert.Equal(t, img.Spec.AltText, "This is a photo.")
+	assert.Equal(t, th.GetAPIVersion(), "thing.haul.io/v1alpha1")
+	assert.Equal(t, img.GetSpec().Path, "/storage/images/hello.png")
+	assert.Equal(t, img.GetSpec().AltText, "This is a photo.")
+}
+
+func TestCantUnmarshalWrongAPI(t *testing.T) {
+	wrongAPIVersion := []byte(`apiVersion: thing.haul.io/v2
+kind: richText
+metadata: {}`)
+	_, err := thing.UnmarshalThing(wrongAPIVersion)
+	assert.Error(t, thing.IncorrectAPIVersionError{}, err)
 }

@@ -4,11 +4,33 @@ import (
 	"time"
 )
 
-// Thing repesents a thing object.
-type Thing struct {
+// Thing represents a thing object
+type Thing interface {
+	GetAPIVersion() string
+	GetKind() string
+	GetMetadata() ThingMetadata
+}
+
+// ThingStruct represents a thing object.
+type ThingStruct struct {
 	APIVersion string        `yaml:"apiVersion"`
 	Kind       string        `yaml:"kind"`
 	Metadata   ThingMetadata `yaml:"metadata"`
+}
+
+// GetAPIVersion returns the API version of the thing.
+func (th ThingStruct) GetAPIVersion() string {
+	return th.APIVersion
+}
+
+// GetKind returns the kind (type) of the thing.
+func (th ThingStruct) GetKind() string {
+	return th.Kind
+}
+
+// GetMetadata returns the metadata of a struct.
+func (th ThingStruct) GetMetadata() ThingMetadata {
+	return th.Metadata
 }
 
 // ThingMetadata represents metadata for a given thing
@@ -19,11 +41,17 @@ type ThingMetadata struct {
 	Labels       []string  `yaml:"labels"`
 }
 
-// RichText represents a thing of type richText.
+// RichText defines a Rich Text object
+type RichText interface {
+	GetSpec() RichTextSpec
+	Thing
+}
+
+// RichTextStruct represents a thing of type richText.
 // It describes a block of Markdown-formatted text.
-type RichText struct {
-	Thing `yaml:",inline"`
-	Spec  RichTextSpec `yaml:"spec"`
+type RichTextStruct struct {
+	ThingStruct `yaml:",inline"`
+	Spec        RichTextSpec `yaml:"spec"`
 }
 
 // RichTextSpec defines the spec block of a richText
@@ -32,11 +60,37 @@ type RichTextSpec struct {
 	Content string `yaml:"content"`
 }
 
-// Image defines a thing of type image.
+// GetAPIVersion returns the API version of the thing.
+func (rtc RichTextStruct) GetAPIVersion() string {
+	return rtc.APIVersion
+}
+
+// GetKind returns the kind (type) of the thing.
+func (rtc RichTextStruct) GetKind() string {
+	return rtc.Kind
+}
+
+// GetMetadata returns the metadata of a struct.
+func (rtc RichTextStruct) GetMetadata() ThingMetadata {
+	return rtc.Metadata
+}
+
+// GetSpec returns the spec for the RichText thing
+func (rtc RichTextStruct) GetSpec() RichTextSpec {
+	return rtc.Spec
+}
+
+// Image defines a thing of kind image
+type Image interface {
+	GetSpec() ImageSpec
+	Thing
+}
+
+// ImageStruct defines a thing of type image.
 // It describes an image.
-type Image struct {
-	Thing `yaml:",inline"`
-	Spec  ImageSpec `yaml:"spec"`
+type ImageStruct struct {
+	ThingStruct `yaml:",inline"`
+	Spec        ImageSpec `yaml:"spec"`
 }
 
 // ImageSpec defines the spec block of an image
@@ -44,4 +98,24 @@ type Image struct {
 type ImageSpec struct {
 	Path    string `yaml:"path"`
 	AltText string `yaml:"altText"`
+}
+
+// GetAPIVersion returns the API version of the thing.
+func (i ImageStruct) GetAPIVersion() string {
+	return i.APIVersion
+}
+
+// GetKind returns the kind (type) of the thing.
+func (i ImageStruct) GetKind() string {
+	return i.Kind
+}
+
+// GetMetadata returns the metadata of a struct.
+func (i ImageStruct) GetMetadata() ThingMetadata {
+	return i.Metadata
+}
+
+// GetSpec returns the spec of the image thing
+func (i ImageStruct) GetSpec() ImageSpec {
+	return i.Spec
 }
