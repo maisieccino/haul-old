@@ -77,3 +77,13 @@ metadata: {}`)
 	fmt.Println(err)
 	assert.Errorf(t, err, thing.UnknownAPIVersionErrorText, "thing.haul.io/v2")
 }
+
+func TestCantUnmarshalUnknownKind(t *testing.T) {
+	wrongKind := []byte(`apiVersion: thing.haul.io/v1alpha1
+kind: blahBlahBlah
+metadata: {}
+spec: {}`)
+	_, err := thing.UnmarshalThing(wrongKind)
+	fmt.Println(err)
+	assert.Errorf(t, err, thing.UnknownKindErrorText, "blahBlahBlah")
+}

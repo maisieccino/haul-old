@@ -19,7 +19,7 @@ func UnmarshalThing(input []byte) (Thing, error) {
 		return nil, UnknownAPIVersionError{GivenVersion: th.GetAPIVersion()}
 	}
 
-	switch th.Kind {
+	switch th.GetKind() {
 	case "richText":
 		var rt RichTextStruct
 		if err := yaml.Unmarshal(input, &rt); err != nil {
@@ -33,7 +33,7 @@ func UnmarshalThing(input []byte) (Thing, error) {
 		}
 		return img, nil
 	default:
-		return th, nil
+		return nil, UnknownKindError{GivenKind: th.GetKind()}
 	}
 
 }
