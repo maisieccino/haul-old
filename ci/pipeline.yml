@@ -1,0 +1,30 @@
+resources:
+- name: version
+  source:
+    driver: gcs
+  type: version
+- name: img
+  source:
+    password: ((dockerhub.pass))
+    repository: mbellgb/haul
+    username: ((dockerhub.user))
+  type: docker-image
+- name: src
+  source:
+    private_key: ((git-private-key))
+    uri: git@github.com:mbellgb/haul.git
+  type: git
+jobs:
+- name: build-dev
+  plan:
+  - get: src
+    resource: src
+    trigger: true
+  - get: version
+    params:
+      pre: dev
+    resource: version
+  - params:
+      tag_file: version/number
+    put: img
+  serial: true

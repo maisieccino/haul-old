@@ -1,0 +1,13 @@
+jobs:
+- name: build-dev
+  serial: true
+  plan:
+  - get: src
+    resource: {{ .src_resource }}
+    trigger: true
+  - get: version
+    resource: {{ .version_resource }}
+    params: { pre: dev }
+  - put: {{ .image_resource }}
+    params:
+      tag_file: version/number

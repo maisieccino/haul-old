@@ -1,0 +1,9 @@
+resources:
+- name: {{ .name }}
+  type: git
+  source:
+    uri: git@github.com:mbellgb/haul.git
+    {{ if .ignore_paths }}
+    ignore_paths: {{ .ignore_paths }}
+    {{ end }}
+    {{if .private_key }}private_key: {{ .private_key }}{{end}}

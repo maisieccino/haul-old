@@ -1,0 +1,5 @@
+resources:
+- name: {{ .name }}
+  type: version
+  source:
+    driver: gcs

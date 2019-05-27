@@ -1,2 +1,4 @@
 ./haul
-./haul-srv
+./haul-srvci/vars.yml
+ci/key*
+ci/vars.yml

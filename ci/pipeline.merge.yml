@@ -1,0 +1,20 @@
+merge:
+- template: jobs/build.yml
+  args:
+    src_resource: src
+    image_resource: img
+    version_resource: version
+- template: resources/git.yml
+  args:
+    name: src
+    private_key: ((git-private-key))
+- template: resources/docker.yml
+  args:
+    name: img
+    repository: mbellgb/haul
+    creds:
+      user: ((dockerhub.user))
+      pass: ((dockerhub.pass))
+- template: resources/version.yml
+  args:
+    name: version

@@ -1,0 +1,8 @@
+resources:
+- name: {{ .name }}
+  type: docker-image
+  source:
+    repository: {{ .repository }}
+    {{ if .tag }}tag: {{ .tag }}{{ end }}
+    {{if .creds.user }}username: {{ .creds.user }}{{end}}
+    {{if .creds.pass }}password: {{ .creds.pass }}{{end}}
